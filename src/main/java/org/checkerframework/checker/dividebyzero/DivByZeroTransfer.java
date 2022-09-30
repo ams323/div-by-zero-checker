@@ -74,7 +74,7 @@ public class DivByZeroTransfer extends CFTransfer {
 
         if(operator.equals(Comparison.NE)){
             if(equal(rhs, reflect(Zero.class))){
-                return reflect(NZero.class); 
+                return glb(reflect(NZero.class), lhs); 
             }
         }
 
@@ -82,15 +82,21 @@ public class DivByZeroTransfer extends CFTransfer {
                 return rhs; 
         }
 
-        if(operator.equals(Comparison.LT)){
+        if(operator.equals(Comparison.LT) || operator.equals(Comparison.GT)){
             if(equal(rhs, reflect(Zero.class))){
                 return reflect(NZero.class);
             }
         }
 
-        if(operator.equals(Comparison.GT)){
+        if(operator.equals(Comparison.LE) || operator.equals(Comparison.GE)){
+            if(equal(rhs, reflect(NZero.class))){
+                return glb(reflect(NZero.class), lhs);
+            }
+        }
+
+        if(operator.equals(Comparison.LE) || operator.equals(Comparison.GE)){
             if(equal(rhs, reflect(Zero.class))){
-                return reflect(NZero.class);
+                return glb(reflect(Top.class), lhs);
             }
         }
         return lhs;
