@@ -74,7 +74,7 @@ public class DivByZeroTransfer extends CFTransfer {
 
         if(operator.equals(Comparison.NE)){
             if(equal(rhs, reflect(Zero.class))){
-                return glb(reflect(NZero.class), lhs); 
+                return reflect(NZero.class); 
             }
         }
 
@@ -86,19 +86,18 @@ public class DivByZeroTransfer extends CFTransfer {
             if(equal(rhs, reflect(Zero.class))){
                 return reflect(NZero.class);
             }
+
+            if(equal(rhs, reflect(NZero.class))){
+                return reflect(NZero.class);
+            }
         }
 
         if(operator.equals(Comparison.LE) || operator.equals(Comparison.GE)){
             if(equal(rhs, reflect(NZero.class))){
-                return glb(reflect(NZero.class), lhs);
+                return reflect(NZero.class);
             }
         }
 
-        if(operator.equals(Comparison.LE) || operator.equals(Comparison.GE)){
-            if(equal(rhs, reflect(Zero.class))){
-                return glb(reflect(Top.class), lhs);
-            }
-        }
         return lhs;
     }
 
@@ -121,64 +120,54 @@ public class DivByZeroTransfer extends CFTransfer {
             AnnotationMirror lhs,
             AnnotationMirror rhs) {
 
+
+        if(equal(lhs, reflect(Bottom.class)) || equal(rhs, reflect(Bottom.class))){
+            return bottom();
+        }
+        if(equal(lhs, reflect(Top.class)) || equal(rhs, reflect(Top.class))){
+            return top();
+        }
+
         if(operator.equals(BinaryOperator.DIVIDE) || operator.equals(BinaryOperator.MOD)){
-            if(equal(lhs, reflect(Bottom.class)) || equal(rhs, reflect(Bottom.class))){
-                return bottom();
-            }
-            else if(equal(lhs, reflect(Zero.class)) && equal(rhs, reflect(NZero.class))){
+            if(equal(lhs, reflect(Zero.class)) && equal(rhs, reflect(NZero.class))){
                 return reflect(Zero.class);
             }
-
-            return top();
         }
 
 
         if(operator.equals(BinaryOperator.PLUS)){
-            if(equal(lhs, reflect(Top.class)) || equal(rhs, reflect(Top.class))){
-                return top();
+            
+            if(equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(NZero.class))){
+                return reflect(Top.class);
             }
-            else if(equal(lhs, reflect(NZero.class)) || equal(rhs, reflect(NZero.class))){
-                return reflect(NZero.class);
-            }
-            else if(equal(lhs, reflect(Zero.class)) || equal(rhs, reflect(Zero.class))){
+            if(equal(lhs, reflect(Zero.class)) && equal(rhs, reflect(Zero.class))){
                 return reflect(Zero.class);
             }
-            else if(equal(lhs, reflect(Bottom.class)) || equal(rhs, reflect(Bottom.class))){
-                return reflect(Bottom.class);
+
+            if(equal(lhs, reflect(NZero.class)) || equal(rhs, reflect(NZero.class))){
+                return reflect(NZero.class);
             }
         }
 
         if(operator.equals(BinaryOperator.MINUS )){
-            if(equal(lhs, reflect(Top.class)) || equal(rhs, reflect(Top.class))){
-                return top();
-            }
-            else if(equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(NZero.class))){
-                return top();
-            }
-            else if((equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(Zero.class))) || (equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(Zero.class)))){
+            if((equal(lhs, reflect(Zero.class)) && equal(rhs, reflect(NZero.class)))){
                 return reflect(NZero.class);
             }
-            else if(equal(lhs, reflect(Zero.class)) && equal(rhs, reflect(Zero.class))){
-                return reflect(Zero.class);
+            if((equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(Zero.class)))){
+                return reflect(NZero.class);
             }
-            else if(equal(lhs, reflect(Bottom.class)) || equal(rhs, reflect(Bottom.class))){
-                return reflect(Bottom.class);
+            if(equal(lhs, reflect(Zero.class)) && equal(rhs, reflect(Zero.class))){
+                return reflect(Zero.class);
             }
         }
 
 
         if(operator.equals(BinaryOperator.TIMES)){
-            if(equal(lhs, reflect(Top.class)) || equal(rhs, reflect(Top.class))){
-                return top();
-            }
-            else if(equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(NZero.class))){
+            if(equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(NZero.class))){
                 return reflect(NZero.class);
             }
-            else if((equal(lhs, reflect(Zero.class)) && equal(rhs, reflect(NZero.class)) || (equal(lhs, reflect(NZero.class)) && equal(rhs, reflect(Zero.class))))){
+            if(equal(lhs, reflect(Zero.class)) || equal(rhs, reflect(Zero.class))){
                 return reflect(Zero.class);
-            }
-            else if(equal(lhs, reflect(Bottom.class)) || equal(rhs, reflect(Bottom.class))){
-                return reflect(Bottom.class);
             }
         }
         return top();

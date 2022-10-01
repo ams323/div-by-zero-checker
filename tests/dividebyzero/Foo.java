@@ -9,6 +9,19 @@ import org.checkerframework.checker.dividebyzero.qual.*;
 // in addition to using those provided to you.
 class Foo {
 
+
+    public static void fmod() {
+        int one  = 1;
+        int zero = 0;
+        // :: error: divide.by.zero
+        int x    = one % zero;
+        int y    = zero % one;
+        // :: error: divide.by.zero
+        int z    = x % y;
+        String s = "hello";
+    }
+
+
     public static void f() {
         int one  = 1;
         int zero = 0;
@@ -86,5 +99,23 @@ class Foo {
         int z = y-y;
         // :: error: divide.by.zero
         int k = 1/z;
+    }
+
+    public static void m() {
+        int a = 1;
+        // :: error: divide.by.zero
+        a /= 0;
+        // :: error: divide.by.zero                                                                    
+        int m2p2 = 1 / ((-2) + 2);
+    }
+
+
+    public static void lo() {
+        int res = 0;
+        for(int i = -5; i <= 0; i++)
+        {
+            // :: error: divide.by.zero
+            res /= 10/i;
+        }
     }
 }
